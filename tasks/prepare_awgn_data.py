@@ -42,7 +42,7 @@ def prepare_data_patch(clear_patches, noise_patches):
         residual_patch = noise_patch - clear_patch
 
         data_patch.append({
-            'clear_patch': clear_patch,
+            'noise_patch': noise_patch,
             'residual_patch': residual_patch
         })
 
