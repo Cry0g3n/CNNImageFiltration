@@ -1,0 +1,6 @@
+{
+  "dataset_path": "D:\\Repositories\\CNNImageFiltration\\data\\datasets",
+  "train_dataset": "Train400",
+  "test_dataset": "classic5",
+  "data_storage": "D:\\Repositories\\CNNImageFiltration\\data\\storage"
+}

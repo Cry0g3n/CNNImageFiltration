@@ -8,6 +8,8 @@ def get_image_filename_list(path):
         return []
     image_filename_list = []
     for (dirpath, dirnames, filenames) in walk(path):
+        for i in range(0, len(filenames)):
+            filenames[i] = dirpath + '\\' + filenames[i]
         image_filename_list.extend(filenames)
         break
 
