@@ -30,11 +30,13 @@ def dncnn(x_train, y_train, options):
     model.add(Conv2D(64, [3, 3], padding='same', activation='relu', use_bias=False,
                      input_shape=[image_size, image_size, channels]))  # layer 1
 
-    for i in range(0, 16):
-        model = add_conv2d_bn_relu_layer(model)
+    for i in range(0, 15):
+        model = add_conv2d_bn_relu_layer(model)  # layer 2-16
 
     model.add(Conv2D(channels, [3, 3], padding='same', activation='linear'))  # layer 17
 
     model.compile(optimizer='sgd', loss='mean_squared_error')
 
     model.fit(x_train, y_train, batch_size=32, epochs=1)
+
+    return model

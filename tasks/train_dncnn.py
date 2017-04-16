@@ -20,7 +20,8 @@ def train_dncnn(storage='gauss_noise_patches.pickle'):
 
     options = {}
 
-    dncnn(x_train, y_train, options)
+    net = dncnn(x_train, y_train, options)
+    net.save(data_storage + '\\' + 'DnCNN.h5')
 
     print('End')
 
