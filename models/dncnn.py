@@ -37,6 +37,6 @@ def dncnn(x_train, y_train, options):
 
     model.compile(optimizer='sgd', loss='mean_squared_error')
 
-    model.fit(x_train, y_train, batch_size=32, epochs=1)
+    model.fit(x_train, y_train, options['batch_size'], options['epochs'])
 
     return model

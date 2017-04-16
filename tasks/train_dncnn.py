@@ -1,7 +1,7 @@
 import json
 
 from models.dncnn import dncnn
-from utils.storage.db import unpack_data
+from utils.storage.db import unpack_data, save_model_to_storage
 
 
 def train_dncnn(storage='gauss_noise_patches.pickle'):
@@ -18,10 +18,13 @@ def train_dncnn(storage='gauss_noise_patches.pickle'):
         x_train.append(data_patch['noise_patch'])
         y_train.append(data_patch['residual_patch'])
 
-    options = {}
+    options = {
+        'batch_size': 32,
+        'epochs': 1
+    }
 
     net = dncnn(x_train, y_train, options)
-    net.save(data_storage + '\\' + 'DnCNN.h5')
+    save_model_to_storage('DnCNN.h5', net)
 
     print('End')
 
