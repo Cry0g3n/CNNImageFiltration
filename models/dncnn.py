@@ -1,5 +1,5 @@
 import numpy as np
-from keras.layers import Conv2D
+from keras.layers import Conv2D, SeparableConv2D, BatchNormalization, Activation
 from keras.models import Sequential
 
 image_size = 40
@@ -14,6 +14,14 @@ def prepare_data(data, normalize=True):
     return data
 
 
+def add_conv2d_bn_relu_layer(model):
+    model.add(SeparableConv2D(64, [3, 3], padding='same'))  # layer 2
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+
+    return model
+
+
 def dncnn(x_train, y_train, options):
     x_train = prepare_data(x_train)
     y_train = prepare_data(y_train)
@@ -22,24 +30,11 @@ def dncnn(x_train, y_train, options):
     model.add(Conv2D(64, [3, 3], padding='same', activation='relu', use_bias=False,
                      input_shape=[image_size, image_size, channels]))  # layer 1
 
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 2
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 3
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 4
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 5
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 6
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 7
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 8
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 9
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 10
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 11
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 12
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 13
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 14
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 15
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu'))  # layer 16
+    for i in range(0, 16):
+        model = add_conv2d_bn_relu_layer(model)
 
-    model.add(Conv2D(channels, [3, 3], padding='same', activation='relu'))  # layer 3
+    model.add(Conv2D(channels, [3, 3], padding='same', activation='linear'))  # layer 17
 
     model.compile(optimizer='sgd', loss='mean_squared_error')
 
-    model.fit(x_train, y_train, batch_size=128, epochs=1)
+    model.fit(x_train, y_train, batch_size=32, epochs=1)
