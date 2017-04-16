@@ -1,5 +1,5 @@
 import numpy as np
-from skimage.measure import structural_similarity as sk_ssim
+from skimage.measure import compare_ssim
 
 
 def psnr(im1, im2):
@@ -9,4 +9,4 @@ def psnr(im1, im2):
 
 
 def ssim(im1, im2):
-    return sk_ssim(im1, im2)
+    return compare_ssim(im1, im2)
