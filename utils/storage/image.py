@@ -1,6 +1,6 @@
 from os import walk
 
-from skimage.io import imread
+import cv2
 
 
 def get_image_filename_list(path):
@@ -23,10 +23,12 @@ def get_image_filename_list2(path):
     return onlyfiles
 
 
-def load_image_filename_list(filename_list):
+def load_image_filename_list(filename_list, gray=False):
     image_list = []
     for filename in filename_list:
-        image = imread(filename)
+        image = cv2.imread(filename)
+        if gray:
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         image_list.append(image)
 
     return image_list

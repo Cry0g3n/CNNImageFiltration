@@ -1,12 +1,10 @@
 import json
-
-from skimage import img_as_ubyte
+from cv2 import imwrite, imread, cvtColor, COLOR_RGB2GRAY
 
 from models.distortions import awgn
 from utils.image_utils import get_image_patches
 from utils.storage.db import pack_data
 from utils.storage.image import get_image_filename_list, load_image_filename_list
-
 
 def prepare_awgn_data(sigma=[15, 25, 50]):
     data_list = []
@@ -19,19 +17,20 @@ def prepare_awgn_data(sigma=[15, 25, 50]):
     data_storage = config['data_storage']
 
     files = get_image_filename_list(train_dataset_path)
-    images = load_image_filename_list(files)
+    images = load_image_filename_list(files, gray=True)
 
     for image in images:
         clear_patches = get_image_patches(image)
         for s in sigma:
             noise_image = awgn(image, s)
-            noise_image = img_as_ubyte(noise_image)
+            imwrite('temp_noise.bmp', noise_image)
+            noise_image = imread('temp_noise.bmp')
+            noise_image = cvtColor(noise_image, COLOR_RGB2GRAY)
             noise_patches = get_image_patches(noise_image)
 
             data_list.extend(prepare_data_patch(clear_patches, noise_patches))
 
     pack_data(data_list, data_storage, 'gauss_noise_patches.pickle')
-    print('End')
 
 
 def prepare_data_patch(clear_patches, noise_patches):
