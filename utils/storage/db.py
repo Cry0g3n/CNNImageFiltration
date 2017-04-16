@@ -27,3 +27,4 @@ def save_model_to_storage(filename, model):
 
 def get_model_from_storage(filename):
     model = load_model(data_storage + '\\' + filename)
+    return model

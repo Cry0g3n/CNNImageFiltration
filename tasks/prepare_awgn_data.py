@@ -36,8 +36,8 @@ def prepare_awgn_data(sigma=[15, 25, 50]):
 def prepare_data_patch(clear_patches, noise_patches):
     data_patch = []
     for i in range(0, len(clear_patches)):
-        clear_patch = clear_patches[0]
-        noise_patch = noise_patches[0]
+        clear_patch = clear_patches[0].astype('float32')
+        noise_patch = noise_patches[0].astype('float32')
         residual_patch = noise_patch - clear_patch
 
         data_patch.append({

@@ -14,6 +14,16 @@ def prepare_data(data, normalize=True):
     return data
 
 
+def unprepare_data(data):  # TODO: Подумать над названием
+    data = data.astype('float32')
+    result = []
+    for i in range(0, data.shape[0]):
+        result.append(data[i, :, :, 0] * 255)
+
+    result = np.asarray(result)
+    return result
+
+
 def add_conv2d_bn_relu_layer(model):
     model.add(SeparableConv2D(64, [3, 3], padding='same'))  # layer 2
     model.add(BatchNormalization())

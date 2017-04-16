@@ -20,7 +20,7 @@ def train_dncnn(storage='gauss_noise_patches.pickle'):
 
     options = {
         'batch_size': 32,
-        'epochs': 1
+        'epochs': 3
     }
 
     net = dncnn(x_train, y_train, options)
