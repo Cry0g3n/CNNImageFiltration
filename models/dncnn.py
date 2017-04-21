@@ -2,7 +2,7 @@ import numpy as np
 from keras.layers import Conv2D, SeparableConv2D, BatchNormalization, Activation
 from keras.models import Sequential
 
-image_size = 40
+image_size = 64
 channels = 1  # TODO: Автоматическое определение количества каналов
 
 
@@ -47,6 +47,6 @@ def dncnn(x_train, y_train, options):
 
     model.compile(optimizer='sgd', loss='mean_squared_error')
 
-    model.fit(x_train, y_train, options['batch_size'], options['epochs'])
+    model.fit(x_train, y_train, options['batch_size'], options['epochs'], validation_split=0.2)
 
     return model

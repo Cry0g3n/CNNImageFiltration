@@ -16,7 +16,7 @@ def get_image_patches(image, crop_size=[40, 40], stride=20):
     return patches
 
 
-def sliding_2d_filtration(image, patch_size=40, model=None):
+def sliding_2d_res_filtration(image, patch_size=40, model=None):
     image_patches = extract_patches_2d(image, [patch_size, patch_size])
 
     if model is not None:
@@ -30,6 +30,23 @@ def sliding_2d_filtration(image, patch_size=40, model=None):
             f_patches.append(f_patch)
 
         f_patches = np.asarray(f_patches)
+    else:
+        f_patches = unprepare_data(image_patches)
+
+    f_image = reconstruct_from_patches_2d(f_patches, image.shape)
+
+    return f_image
+
+
+def sliding_2d_filtration(image, patch_size=40, model=None):
+    image_patches = extract_patches_2d(image, [patch_size, patch_size])
+
+    if model is not None:
+        patches = prepare_data(image_patches)
+        f_patches = model.predict(patches, verbose=1)
+
+        f_patches = np.asarray(f_patches)
+        f_patches = unprepare_data(f_patches)
     else:
         f_patches = unprepare_data(image_patches)
 
