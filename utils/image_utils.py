@@ -53,3 +53,17 @@ def sliding_2d_filtration(image, patch_size=40, model=None):
     f_image = reconstruct_from_patches_2d(f_patches, image.shape)
 
     return f_image
+
+
+def grid_2d_filtration(image, patch_size=40, stride=20, model=None):
+    shape = image.shape
+    f_image = np.copy(image)
+    for x in range(0, shape[0], stride):
+        if x + patch_size <= shape[0]:
+            for y in range(0, shape[1], stride):
+                if y + patch_size <= shape[1]:
+                    patches = [image[x:x + patch_size, y:y + patch_size]]
+                    data = prepare_data(patches)
+                    f_image[x:x + patch_size, y:y + patch_size] = unprepare_data(model.predict_on_batch(data))[0]
+
+    return f_image

@@ -21,7 +21,7 @@ def train_autoencoder(storage='gauss_noise_patches-size-64.pickle'):
 
     options = {
         'batch_size': 128,
-        'epochs': 10
+        'epochs': 1
     }
 
     net = autoencoder(x_train, y_train, options)
