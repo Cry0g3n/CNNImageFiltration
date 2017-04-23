@@ -22,8 +22,7 @@ class DenoisingAutoEncoderSR(BaseSuperResolutionModel):
         level1_1 = Conv2D(self.n1, [self.f1, self.f1], activation='relu', padding='same')(init)
         level2_1 = Conv2D(self.n1, [self.f1, self.f1], activation='relu', padding='same')(level1_1)
 
-        level2_2 = Deconv2D(self.n1, [self.f1, self.f1], activation='relu', padding='same')(
-            level2_1)
+        level2_2 = Deconv2D(self.n1, [self.f1, self.f1], activation='relu', padding='same')(level2_1)
         level2 = merge([level2_1, level2_2], mode='sum')
 
         level1_2 = Deconv2D(self.n1, [self.f1, self.f1], activation='relu', padding='same')(level2)

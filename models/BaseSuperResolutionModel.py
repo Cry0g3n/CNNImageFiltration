@@ -23,7 +23,7 @@ class BaseSuperResolutionModel(object):
         self.height = None
         self.width = None
         self.channels = None
-        self.model_path = data_storage + '\\' + model_name + 'h5'
+        self.model_path = data_storage + '\\' + model_name + '.h5'
 
     def create_model(self, height=32, width=32, channels=3, batch_size=128):
         shape = (width, height, channels)

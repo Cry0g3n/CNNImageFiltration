@@ -1,52 +1,56 @@
-import numpy as np
+from keras.engine import Input, Model
 from keras.layers import Conv2D, SeparableConv2D, BatchNormalization, Activation
-from keras.models import Sequential
 
-image_size = 64
-channels = 1  # TODO: Автоматическое определение количества каналов
+from models.BaseSuperResolutionModel import BaseSuperResolutionModel
 
 
-def prepare_data(data, normalize=True):
-    data = np.asarray(data)
-    if normalize:
-        data = data.astype('float32') / 255
-    data = np.reshape(data, (len(data), image_size, image_size, channels))
-    return data
+class DnCNN(BaseSuperResolutionModel):
+    def __init__(self):
+        super(DnCNN, self).__init__("DnCNN")
 
+        self.n1 = 64
+        self.f1 = 3
+        self.layers = 15
 
-def unprepare_data(data):  # TODO: Подумать над названием
-    data = data.astype('float32')
-    result = []
-    for i in range(0, data.shape[0]):
-        result.append(data[i, :, :, 0] * 255)
+    def create_model(self, height=64, width=64, channels=1, batch_size=32):
+        self.height = height
+        self.width = width
+        self.channels = channels
 
-    result = np.asarray(result)
-    return result
+        init = Input(shape=(height, width, channels))
 
+        level1_1 = Conv2D(self.n1, [self.f1, self.f1], activation='relu', padding='same', use_bias=False)(init)
 
-def add_conv2d_bn_relu_layer(model):
-    model.add(SeparableConv2D(64, [3, 3], padding='same'))  # layer 2
-    model.add(BatchNormalization())
-    model.add(Activation('relu'))
+        level2_1 = SeparableConv2D(self.n1, [self.f1, self.f1], padding='same')(level1_1)
+        level2_2 = BatchNormalization()(level2_1)
+        level2_3 = Activation('relu')(level2_2)
 
-    return model
+        decoded = Conv2D(channels, [self.f1, self.f1], activation='linear', padding='same')(level2_3)
 
+        model = Model(init, decoded)
+        model.compile(optimizer='adam', loss='mean_squared_error')
+        self.model = model
 
-def dncnn(x_train, y_train, options):
-    x_train = prepare_data(x_train)
-    y_train = prepare_data(y_train)
+        return model
 
-    model = Sequential()
-    model.add(Conv2D(64, [3, 3], padding='same', activation='relu', use_bias=False,
-                     input_shape=[image_size, image_size, channels]))  # layer 1
+    def fit(self, batch_size=32, nb_epochs=1):
+        return super(DnCNN, self).fit(batch_size, nb_epochs)
 
-    for i in range(0, 15):
-        model = add_conv2d_bn_relu_layer(model)  # layer 2-16
+    def predict(self, image, stride=32):
+        noise = super(DnCNN, self).predict(image, stride)
+        f_image = image - noise
 
-    model.add(Conv2D(channels, [3, 3], padding='same', activation='linear'))  # layer 17
+        return f_image
 
-    model.compile(optimizer='sgd', loss='mean_squared_error')
+    def save_data(self, x_name, y_name):
+        train_data = self.raw_data
 
-    model.fit(x_train, y_train, options['batch_size'], options['epochs'], validation_split=0.2)
+        x_train = []
+        y_train = []
 
-    return model
+        for data_patch in train_data:
+            x_train.append(data_patch[x_name])
+            y_train.append(data_patch[x_name] - data_patch[y_name])
+
+        self.x_data = self.prepare_data(x_train)
+        self.y_data = self.prepare_data(y_train)
