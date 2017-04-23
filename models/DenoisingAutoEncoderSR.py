@@ -13,14 +13,11 @@ class DenoisingAutoEncoderSR(BaseSuperResolutionModel):
         self.f2 = 5
 
     def create_model(self, height=64, width=64, channels=1, batch_size=32):
-        shape = (width, height, channels)
         self.height = height
         self.width = width
         self.channels = channels
 
         init = Input(shape=(height, width, channels))
-
-        output_shape = (None, height, width, channels)
 
         level1_1 = Conv2D(self.n1, [self.f1, self.f1], activation='relu', padding='same')(init)
         level2_1 = Conv2D(self.n1, [self.f1, self.f1], activation='relu', padding='same')(level1_1)
