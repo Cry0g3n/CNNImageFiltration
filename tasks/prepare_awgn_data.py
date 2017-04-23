@@ -37,13 +37,11 @@ def prepare_awgn_data(filename='gauss_noise_patches.pickle', sigma=[15, 25, 50])
 def prepare_data_patch(clear_patches, noise_patches):
     data_patch = []
     for i in range(0, len(clear_patches)):
-        clear_patch = clear_patches[0].astype('float32')
-        noise_patch = noise_patches[0].astype('float32')
-        residual_patch = noise_patch - clear_patch
+        clear_patch = clear_patches[i]
+        noise_patch = noise_patches[i]
 
         data_patch.append({
             'noise_patch': noise_patch,
-            'residual_patch': residual_patch,
             'clear_patch': clear_patch,
         })
 
